@@ -16,7 +16,7 @@ namespace HotelBooking.UnitTests
         public BookingManagerTests() {
             bookingRepository = new Mock<IRepository<Booking>>();
             bookingRepository.Setup(x => x.GetAll()).Returns(BookingRepositoryData.bookings);
-            bookingRepository.Setup(x => x.Get(1)).Returns(BookingRepositoryData.bookings[1]);
+            bookingRepository.Setup(x => x.Get(It.IsAny<int>())).Returns(BookingRepositoryData.bookings[1]);
 
             roomRepository = new Mock<IRepository<Room>>();
             roomRepository.Setup(x => x.GetAll()).Returns(RoomRepositoryData.rooms);
