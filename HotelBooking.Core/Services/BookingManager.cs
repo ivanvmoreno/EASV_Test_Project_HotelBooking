@@ -16,7 +16,7 @@ namespace HotelBooking.Core
             this.roomRepository = roomRepository;
         }
 
-        public bool CreateBooking(Booking booking)
+        public virtual bool CreateBooking(Booking booking)
         {
             int roomId = FindAvailableRoom(booking.StartDate, booking.EndDate);
 
