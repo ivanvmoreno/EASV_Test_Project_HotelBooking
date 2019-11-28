@@ -32,11 +32,13 @@ namespace HotelBooking.UnitTests
 			Assert.Throws<ArgumentException>(() => bookingManager.FindAvailableRoom(date, date));
 		}
 
-		[Fact]
-		public void FindAvailableRoom_StartDateLowerThanEndDate_ThrowsArgumentException()
+		[Theory]
+		[InlineData(1, 0)]
+		[InlineData(-1, 0)]
+		public void FindAvailableRoom_CheckDates_ThrowsArgumentException(int start, int end)
 		{
-			DateTime startDate = DateTime.Today.AddDays(1);
-			DateTime endDate = DateTime.Today;
+			DateTime startDate = DateTime.Today.AddDays(start);
+			DateTime endDate = DateTime.Today.AddDays(end);
 			Assert.Throws<ArgumentException>(() => bookingManager.FindAvailableRoom(startDate, endDate));
 		}
 
@@ -137,6 +139,18 @@ namespace HotelBooking.UnitTests
 			DateTime endDate = DateTime.Today.AddDays(15);
 			bookingManager.GetFullyOccupiedDates(startDate, endDate);
 			bookingRepository.Verify(x => x.GetAll(), Times.Once());
+		}
+		
+		[Fact]
+		public void GetFullyOccupiedDates_BookingRepositoryGetAll_NoBookings()
+		{
+			Mock<IRepository<Room>> _roomRepository = new Mock<IRepository<Room>>();
+			_roomRepository.Setup(x => x.GetAll()).Returns(new List<Room>());
+			IBookingManager _bookingManager = new BookingManager(bookingRepository.Object, _roomRepository.Object);
+			DateTime startDate = DateTime.Today.AddDays(10);
+			DateTime endDate = DateTime.Today.AddDays(15);
+			List<DateTime> datesList = _bookingManager.GetFullyOccupiedDates(startDate, endDate);
+			Assert.Empty(datesList);
 		}
 	}
 }
